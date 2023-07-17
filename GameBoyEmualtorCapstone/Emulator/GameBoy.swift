@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+class GameBoy {
+    var LR35902: CPU = CPU();
+    var romData: [U8];
+}

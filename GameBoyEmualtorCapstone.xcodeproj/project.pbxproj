@@ -16,6 +16,11 @@
 		700106EF2A539E4100B157B7 /* GameBoyEmualtorCapstoneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700106EE2A539E4100B157B7 /* GameBoyEmualtorCapstoneTests.swift */; };
 		700106F92A539E4100B157B7 /* GameBoyEmualtorCapstoneUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700106F82A539E4100B157B7 /* GameBoyEmualtorCapstoneUITests.swift */; };
 		700106FB2A539E4100B157B7 /* GameBoyEmualtorCapstoneUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700106FA2A539E4100B157B7 /* GameBoyEmualtorCapstoneUITestsLaunchTests.swift */; };
+		700107092A539F8700B157B7 /* Cartridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700107082A539F8700B157B7 /* Cartridge.swift */; };
+		7001070B2A53A10A00B157B7 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7001070A2A53A10A00B157B7 /* Common.swift */; };
+		7001070F2A56B2B000B157B7 /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7001070E2A56B2B000B157B7 /* CPU.swift */; };
+		700107112A56B48D00B157B7 /* Bus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700107102A56B48D00B157B7 /* Bus.swift */; };
+		706864112A634CC40041C216 /* GameBoy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706864102A634CC40041C216 /* GameBoy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +55,11 @@
 		700106F42A539E4100B157B7 /* GameBoyEmualtorCapstoneUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GameBoyEmualtorCapstoneUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		700106F82A539E4100B157B7 /* GameBoyEmualtorCapstoneUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoyEmualtorCapstoneUITests.swift; sourceTree = "<group>"; };
 		700106FA2A539E4100B157B7 /* GameBoyEmualtorCapstoneUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoyEmualtorCapstoneUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		700107082A539F8700B157B7 /* Cartridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cartridge.swift; sourceTree = "<group>"; };
+		7001070A2A53A10A00B157B7 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		7001070E2A56B2B000B157B7 /* CPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
+		700107102A56B48D00B157B7 /* Bus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bus.swift; sourceTree = "<group>"; };
+		706864102A634CC40041C216 /* GameBoy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +110,7 @@
 		700106D62A539E4000B157B7 /* GameBoyEmualtorCapstone */ = {
 			isa = PBXGroup;
 			children = (
+				700107072A539E6900B157B7 /* Emulator */,
 				700106D72A539E4000B157B7 /* AppDelegate.swift */,
 				700106D92A539E4000B157B7 /* GameViewController.swift */,
 				700106DB2A539E4000B157B7 /* Renderer.swift */,
@@ -127,6 +138,18 @@
 				700106FA2A539E4100B157B7 /* GameBoyEmualtorCapstoneUITestsLaunchTests.swift */,
 			);
 			path = GameBoyEmualtorCapstoneUITests;
+			sourceTree = "<group>";
+		};
+		700107072A539E6900B157B7 /* Emulator */ = {
+			isa = PBXGroup;
+			children = (
+				7001070A2A53A10A00B157B7 /* Common.swift */,
+				700107082A539F8700B157B7 /* Cartridge.swift */,
+				7001070E2A56B2B000B157B7 /* CPU.swift */,
+				700107102A56B48D00B157B7 /* Bus.swift */,
+				706864102A634CC40041C216 /* GameBoy.swift */,
+			);
+			path = Emulator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,9 +283,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				700106DE2A539E4000B157B7 /* Shaders.metal in Sources */,
+				706864112A634CC40041C216 /* GameBoy.swift in Sources */,
 				700106DA2A539E4000B157B7 /* GameViewController.swift in Sources */,
+				7001070F2A56B2B000B157B7 /* CPU.swift in Sources */,
 				700106DC2A539E4000B157B7 /* Renderer.swift in Sources */,
 				700106D82A539E4000B157B7 /* AppDelegate.swift in Sources */,
+				7001070B2A53A10A00B157B7 /* Common.swift in Sources */,
+				700107112A56B48D00B157B7 /* Bus.swift in Sources */,
+				700107092A539F8700B157B7 /* Cartridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
