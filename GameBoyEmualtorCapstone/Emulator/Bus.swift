@@ -16,6 +16,14 @@ extension GameBoy {
             return 0;
         }
     }
+    func BusWrite(address: U16, value: U8) -> Void {
+        switch address {
+        case 0x0000..<0x8000:
+            self.romData[Int(address)] = value;
+        default:
+            print("INVALID BUS WRITE")
+        }
+    }
 }
 
 

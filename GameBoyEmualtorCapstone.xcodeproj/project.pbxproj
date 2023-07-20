@@ -21,6 +21,8 @@
 		7001070F2A56B2B000B157B7 /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7001070E2A56B2B000B157B7 /* CPU.swift */; };
 		700107112A56B48D00B157B7 /* Bus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700107102A56B48D00B157B7 /* Bus.swift */; };
 		706864112A634CC40041C216 /* GameBoy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706864102A634CC40041C216 /* GameBoy.swift */; };
+		708647B42A69CDBE0080EDE6 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708647B32A69CDBE0080EDE6 /* Stack.swift */; };
+		7089A31C2A65DF5A008A7F2D /* CPUInstructions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7089A31B2A65DF5A008A7F2D /* CPUInstructions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +62,8 @@
 		7001070E2A56B2B000B157B7 /* CPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
 		700107102A56B48D00B157B7 /* Bus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bus.swift; sourceTree = "<group>"; };
 		706864102A634CC40041C216 /* GameBoy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoy.swift; sourceTree = "<group>"; };
+		708647B32A69CDBE0080EDE6 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
+		7089A31B2A65DF5A008A7F2D /* CPUInstructions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUInstructions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +152,8 @@
 				7001070E2A56B2B000B157B7 /* CPU.swift */,
 				700107102A56B48D00B157B7 /* Bus.swift */,
 				706864102A634CC40041C216 /* GameBoy.swift */,
+				7089A31B2A65DF5A008A7F2D /* CPUInstructions.swift */,
+				708647B32A69CDBE0080EDE6 /* Stack.swift */,
 			);
 			path = Emulator;
 			sourceTree = "<group>";
@@ -287,6 +293,8 @@
 				700106DA2A539E4000B157B7 /* GameViewController.swift in Sources */,
 				7001070F2A56B2B000B157B7 /* CPU.swift in Sources */,
 				700106DC2A539E4000B157B7 /* Renderer.swift in Sources */,
+				708647B42A69CDBE0080EDE6 /* Stack.swift in Sources */,
+				7089A31C2A65DF5A008A7F2D /* CPUInstructions.swift in Sources */,
 				700106D82A539E4000B157B7 /* AppDelegate.swift in Sources */,
 				7001070B2A53A10A00B157B7 /* Common.swift in Sources */,
 				700107112A56B48D00B157B7 /* Bus.swift in Sources */,
