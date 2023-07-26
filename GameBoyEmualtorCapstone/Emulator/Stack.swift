@@ -26,7 +26,7 @@ class Stack {
     }
     
     func StackPush(data: UInt8) -> Void {
-        CPUStateInstance.registersState.sp &-= 1;
+        //CPUStateInstance.registersState.sp &-= 1;
         self.push(number: data);
     }
     //First we push the high byte to the stack so we just shift right 8 bits and convert to UInt8.
@@ -38,7 +38,7 @@ class Stack {
         self.push(number: lowByte);
     }
     func StackPop() -> UInt8 {
-        CPUStateInstance.registersState.sp += 1;
+        //CPUStateInstance.registersState.sp += 1;
         return self.pop()
     }
 

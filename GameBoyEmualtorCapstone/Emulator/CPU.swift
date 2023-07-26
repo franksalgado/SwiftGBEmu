@@ -105,6 +105,7 @@ struct CPURegisters {
 }
 
 class CPU {
+    //var GB: GameBoy = GameBoy();
     var registers = CPURegisters();
     var currentOpcode: UInt8;
     var halted: Bool;
@@ -113,35 +114,36 @@ class CPU {
     var enablingIME: Bool;
     var interruptEnableRegister: UInt8;
     var interruptFlags: UInt8;
-    let InstructionsTable = GenerateOpcodes();
-    var gameBoyDevice: GameBoy = GameBoy();
+    var stack: Stack = Stack()
+    //let InstructionsTable = GenerateOpcodes();
+    var GB: GameBoy;
     func CPUStep(GameBoy: GameBoy) -> Bool{
-        if !self.halted {
-            self.currentOpcode = GameBoy.BusRead(address: self.registers.pc);
+        if !halted {
+            currentOpcode = GameBoy.BusRead(address: registers.pc);
             EmulatorCycles(CPUCycles: 1);
-            self.registers.pc += 1;
+            registers.pc += 1;
             //TestRomWrite();
             //TestRomRead();
            // print(self.registersState)
             //print(String(format: "0x%X", self.currentOpcode), self.InstructionsTable[Int(self.currentOpcode)].name)
-            self.InstructionsTable[Int(self.currentOpcode)].instructionFunction();
+            InstructionsTable[Int(currentOpcode)].instructionFunction();
         }
         else {
             EmulatorCycles(CPUCycles: 1);
-            if self.interruptFlags != 0 {
-                self.halted = false;
+            if interruptFlags != 0 {
+                halted = false;
             }
         }
-        if self.interruptMasterEnable {
+        if interruptMasterEnable {
             CPUHandleInterrupts();
-            self.enablingIME = false;
+            enablingIME = false;
         }
-        if self.enablingIME {
-            self.interruptMasterEnable = true;
+        if enablingIME {
+            interruptMasterEnable = true;
         }
         return true;
     }
-    init(){
+    init(GameBoy: GameBoy){
         currentOpcode = 0;
         halted = false;
         stepping = false;
@@ -149,5 +151,6 @@ class CPU {
         enablingIME = false;
         interruptEnableRegister = 0;
         interruptFlags = 0;
+        GB = GameBoy;
     }
 }

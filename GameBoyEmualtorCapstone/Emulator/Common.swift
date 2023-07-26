@@ -17,13 +17,10 @@ let HFlag: UInt8 = 5;
 let CFlag: UInt8 = 4;
 
 func isBitSet(bitPosition: UInt8, in value: UInt8) -> Bool {
-    let mask: UInt8 = 1 << bitPosition
-    return (value & mask) != 0
+    let mask: UInt8 = 1 << bitPosition;
+    return (value & mask) != 0;
 }
 
 func IsZero(value: UInt8) -> UInt8 {
-    if value == 0 {
-        return 1;
-    }
-    return 0;
+    return (value == 0 ? 1 : 0);
 }
