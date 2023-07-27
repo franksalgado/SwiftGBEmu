@@ -52,40 +52,40 @@ struct CPURegisters {
     }
 
     // GetAFRegister - Gets the value of the AF register
-    func GetAFRegister() -> UInt16 {
+    func getAFRegister() -> UInt16 {
         let lowByte: UInt16 = UInt16(self.f);
         let highByte: UInt16 = UInt16(self.a);
         return lowByte | (highByte << 8);
     }
 
     // SetAFRegister - Sets the value of the AF register
-    mutating func SetAFRegister(value: UInt16) -> Void {
+    mutating func setAFRegister(value: UInt16) -> Void {
         self.f = UInt8(value & 0xFF);
         self.a = UInt8((value >> 8) & 0xFF);
     }
 
     // GetHLRegister - Gets the value of the HL register
-    func GetHLRegister() -> UInt16 {
+    func getHLRegister() -> UInt16 {
         let lowByte: UInt16 = UInt16(self.l);
         let highByte: UInt16 = UInt16(self.h);
         return lowByte | (highByte << 8);
     }
 
     // SetHLRegister - Sets the value of the HL register
-    mutating func SetHLRegister(value: UInt16) -> Void {
+    mutating func setHLRegister(value: UInt16) -> Void {
         self.l = UInt8(value & 0xFF);
         self.h = UInt8(value >> 8);
     }
 
     // GetDERegister - Gets the value of the DE register
-    func GetDERegister() -> UInt16 {
+    func getDERegister() -> UInt16 {
         let lowByte: UInt16 = UInt16(self.e);
         let highByte: UInt16 = UInt16(self.d);
         return lowByte | (highByte << 8);
     }
 
     // SetDERegister - Sets the value of the DE register
-    mutating func SetDERegister(value: UInt16) -> Void {
+    mutating func setDERegister(value: UInt16) -> Void {
         self.e = UInt8(value & 0xFF);
         self.d = UInt8((value >> 8) & 0xFF);
     }

@@ -24,6 +24,17 @@ extension GameBoy {
             print("INVALID BUS WRITE")
         }
     }
+    
+    func BusRead16Bit(address: UInt16) -> UInt16 {
+        let lowByte: UInt16 = UInt16(BusRead(address: address));
+        let highByte: UInt16 = UInt16(BusRead(address: address + 1));
+        return lowByte | (highByte << 8);
+    }
+
+    func BusWrite16Bit(address: UInt16, value: UInt16) {
+        BusWrite(address: address + 1, value: UInt8(value >> 8));
+        BusWrite(address: address, value: UInt8(value & 0xFF));
+    }
 }
 
 
