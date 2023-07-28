@@ -78,7 +78,7 @@ extension CPU {
         table[0x3C] = Instruction(name: "INC A", instructionFunction: {[self] in INC_R(register: &registers.a)});
         table[0x3D] = Instruction(name: "DEC A", instructionFunction: {[self] in DEC_R(register: &registers.a)});
         table[0x3E] = Instruction(name: "LD A, d8", instructionFunction: {[self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: registers.pc), specialCase: true)});
-        table[0x3F] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0x3F] = Instruction(name: "CCF", instructionFunction: CCF);
         table[0x40] = Instruction(name: "LD B, B", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.b, specialCase: false)});
         table[0x41] = Instruction(name: "LD B, C", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.c, specialCase: false)});
         table[0x42] = Instruction(name: "LD B, D", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.d, specialCase: false)});
@@ -127,14 +127,14 @@ extension CPU {
         table[0x6D] = Instruction(name: "LD L, L", instructionFunction: { [self] in LD_R_R(registerOne: &registers.l, value: registers.l, specialCase: false)});
         table[0x6E] = Instruction(name: "LD L, (HL)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.l, value: GB.BusRead(address: registers.getHLRegister()), specialCase: true)});
         table[0x6F] = Instruction(name: "LD L, A", instructionFunction: { [self] in LD_R_R(registerOne: &registers.l, value: registers.a, specialCase: false)});
-        table[0x70] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0x71] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0x72] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0x73] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0x74] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0x75] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0x76] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0x77] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0x70] = Instruction(name: "LD (HL), B", instructionFunction: { [self] in LD_ADDR_r(address: registers.getHLRegister(), value: registers.b) });
+        table[0x71] = Instruction(name: "LD (HL), C", instructionFunction: { [self] in LD_ADDR_r(address: registers.getHLRegister(), value: registers.c) });
+        table[0x72] = Instruction(name: "LD (HL), D", instructionFunction: { [self] in LD_ADDR_r(address: registers.getHLRegister(), value: registers.d) });
+        table[0x73] = Instruction(name: "LD (HL), E", instructionFunction: { [self] in LD_ADDR_r(address: registers.getHLRegister(), value: registers.e) });
+        table[0x74] = Instruction(name: "LD (HL), H", instructionFunction: { [self] in LD_ADDR_r(address: registers.getHLRegister(), value: registers.h) });
+        table[0x75] = Instruction(name: "LD (HL), L", instructionFunction: { [self] in LD_ADDR_r(address: registers.getHLRegister(), value: registers.l) });
+        table[0x76] = Instruction(name: "HALT", instructionFunction: HALT);
+        table[0x77] = Instruction(name: "LD (HL), A", instructionFunction: { [self] in LD_ADDR_r(address: registers.getHLRegister(), value: registers.a) });
         table[0x78] = Instruction(name: "LD A, B", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: registers.b, specialCase: false)});
         table[0x79] = Instruction(name: "LD A, C", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: registers.c, specialCase: false)});
         table[0x7A] = Instruction(name: "LD A, D", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: registers.d, specialCase: false)});
@@ -208,57 +208,57 @@ extension CPU {
         table[0xBE] = Instruction(name: "CP (HL)", instructionFunction: { [self] in CP_R(value: GB.BusRead(address: registers.getHLRegister() ) ) });
         table[0xBF] = Instruction(name: "CP A", instructionFunction: { [self] in CP_R(value: registers.a)});
         table[0xC0] = Instruction(name: "RET NZ", instructionFunction: { [self] in RET_COND(conditon: !isBitSet(bitPosition: ZFlag, in: registers.f))} );
-        table[0xC1] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xC2] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xC3] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xC4] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xC5] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xC6] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xC7] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xC8] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xC9] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xCA] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0xC1] = Instruction(name: "POP BC", instructionFunction: {[self] in POP_16R(register: registers.setBCRegister(value:))});
+        table[0xC2] = Instruction(name: "JP NZ, a16", instructionFunction: {[self] in JP_COND_a16(condition: !isBitSet(bitPosition: ZFlag, in: registers.f))});
+        table[0xC3] = Instruction(name: "JP a16", instructionFunction: {[self] in JP_COND_a16(condition: true)});
+        table[0xC4] = Instruction(name: "CALL NZ, a16", instructionFunction: {[self] in CALL_COND_a16(condition: !isBitSet(bitPosition: ZFlag, in: registers.f))});
+        table[0xC5] = Instruction(name: "PUSH BC", instructionFunction: {[self] in PUSH_16R(data: registers.getBCRegister())});
+        table[0xC6] = Instruction(name: "ADD A, d8", instructionFunction: {[self] in ADD_A_R(value: GB.BusRead(address: registers.pc))});
+        table[0xC7] = Instruction(name: "RST 00H", instructionFunction: {[self] in RST_n_H(address: 00)});
+        table[0xC8] = Instruction(name: "RET Z", instructionFunction: {[self] in RET_COND(conditon: isBitSet(bitPosition: ZFlag, in: registers.f))});
+        table[0xC9] = Instruction(name: "RET", instructionFunction: {[self] in RET_COND(conditon: true)});
+        table[0xCA] = Instruction(name: "JP Z, a16", instructionFunction: {[self] in JP_COND_a16(condition: isBitSet(bitPosition: ZFlag, in: registers.f))});
         table[0xCB] = Instruction(name: "PREFIX CB", instructionFunction: PREFIXCB);
-        table[0xCC] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xCD] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xCE] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0xCC] = Instruction(name: "CALL Z,a16", instructionFunction: {[self] in CALL_COND_a16(condition: isBitSet(bitPosition: ZFlag, in: registers.f))});
+        table[0xCD] = Instruction(name: "CALL a16", instructionFunction: {[self] in CALL_COND_a16(condition: true)});
+        table[0xCE] = Instruction(name: "ADC A,d8", instructionFunction: {[self] in ADC_A_R(register: GB.BusRead(address: registers.pc))});
         table[0xCF] = Instruction(name: "RST 08H", instructionFunction: { [self] in RST_n_H(address: 08)});
         table[0xD0] = Instruction(name: "RET NC", instructionFunction: { [self] in RET_COND(conditon: !isBitSet(bitPosition: CFlag, in: registers.f))} );
-        table[0xD1] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xD2] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xD4] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xD5] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xD6] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xD7] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xD8] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0xD1] = Instruction(name: "POP DE", instructionFunction: {[self] in POP_16R(register: registers.setDERegister(value:))});
+        table[0xD2] = Instruction(name: "JP NC, a16", instructionFunction: {[self] in JP_COND_a16(condition: !isBitSet(bitPosition: CFlag, in: registers.f))});
+        table[0xD4] = Instruction(name: "CALL NC, a16", instructionFunction: {[self] in CALL_COND_a16(condition: !isBitSet(bitPosition: CFlag, in: registers.f))});
+        table[0xD5] = Instruction(name: "PUSH DE", instructionFunction: {[self] in PUSH_16R(data: registers.getDERegister())});
+        table[0xD6] = Instruction(name: "SUB d8", instructionFunction: {[self] in SUB_R(value: GB.BusRead(address: registers.pc))});
+        table[0xD7] = Instruction(name: "RST 10H", instructionFunction: {[self] in RST_n_H(address: 10)});
+        table[0xD8] = Instruction(name: "RET C", instructionFunction: {[self] in RET_COND(conditon: isBitSet(bitPosition: CFlag, in: registers.f))});
         table[0xD9] = Instruction(name: "RETI", instructionFunction: {[self] in RET_COND(conditon: true)});
-        table[0xDA] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xDC] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xDE] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0xDA] = Instruction(name: "JP C, a16", instructionFunction: {[self] in JP_COND_a16(condition: isBitSet(bitPosition: CFlag, in: registers.f))});
+        table[0xDC] = Instruction(name: "CALL C,a16", instructionFunction: {[self] in CALL_COND_a16(condition: isBitSet(bitPosition: CFlag, in: registers.f))});
+        table[0xDE] = Instruction(name: "SBC A, d8", instructionFunction: {[self] in SBC_A_R(register: GB.BusRead(address: registers.pc))});
         table[0xDF] = Instruction(name: "RST 18H", instructionFunction: { [self] in RST_n_H(address: 18)});
-        table[0xE0] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xE1] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xE2] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xE5] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xE6] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xE7] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xE8] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xE9] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0xE0] = Instruction(name: "LDH (a8), A", instructionFunction: LDH_ADDR_a8_A);
+        table[0xE1] = Instruction(name: "POP HL", instructionFunction: {[self] in POP_16R(register: registers.setHLRegister(value:))});
+        table[0xE2] = Instruction(name: "LD (C), A", instructionFunction: {[self] in LD_ADDR_r(address: 0xFF00 | UInt16(registers.c), value: registers.a)});
+        table[0xE5] = Instruction(name: "PUSH HL", instructionFunction: {[self] in PUSH_16R(data: registers.getHLRegister())});
+        table[0xE6] = Instruction(name: "AND d8", instructionFunction: {[self] in AND_R(value: GB.BusRead(address: registers.pc))});
+        table[0xE7] = Instruction(name: "RST 20H", instructionFunction: {[self] in RST_n_H(address: 20)});
+        table[0xE8] = Instruction(name: "ADD SP, r8", instructionFunction: ADD_SP_r8);
+        table[0xE9] = Instruction(name: "JP (HL)", instructionFunction: {[self] in JP_COND_a16(condition: false)});
         table[0xEA] = Instruction(name: "LD (a16), A", instructionFunction: {[self] in LD_ADDR_r(address: FetchD16(), value: registers.a)});
-        table[0xEE] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0xEE] = Instruction(name: "XOR d8", instructionFunction: {[self] in XOR_R(value: GB.BusRead(address: registers.pc))});
         table[0xEF] = Instruction(name: "RST 28H", instructionFunction: { [self] in RST_n_H(address: 28)});
-        table[0xF0] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xF1] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xF2] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xF3] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xF5] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xF6] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xF7] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0xF0] = Instruction(name: "LDH A, (a8)", instructionFunction: LDH_A_ADDR_a8);
+        table[0xF1] = Instruction(name: "POP AF", instructionFunction: {[self] in POP_16R(register: registers.setAFRegister(value:))});
+        table[0xF2] = Instruction(name: "LD A, (C)", instructionFunction: {[self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: 0xFF00 | UInt16(registers.c)), specialCase: true)});
+        table[0xF3] = Instruction(name: "DI", instructionFunction: DI);
+        table[0xF5] = Instruction(name: "PUSH AF", instructionFunction: {[self] in PUSH_16R(data: registers.getAFRegister())});
+        table[0xF6] = Instruction(name: "OR d8", instructionFunction: {[self] in OR_R(register: GB.BusRead(address: registers.pc))});
+        table[0xF7] = Instruction(name: "RST 30H", instructionFunction: {[self] in RST_n_H(address: 30)});
         table[0xF8] = Instruction(name: "LD HL, SP+r8", instructionFunction: LD_HL_SP_plus_R8);
-        table[0xF9] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0xF9] = Instruction(name: "LD SP, HL", instructionFunction: LD_SP_HL);
         table[0xFA] = Instruction(name: "LD A, (a16)", instructionFunction: {[self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: FetchD16() ), specialCase: true)});
-        table[0xFB] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
-        table[0xFE] = Instruction(name: <#T##String#>, instructionFunction: <#T##(() -> Void)##(() -> Void)##() -> Void#>);
+        table[0xFB] = Instruction(name: "EI", instructionFunction: EI);
+        table[0xFE] = Instruction(name: "CP d8", instructionFunction: {[self] in CP_R(value: GB.BusRead(address: registers.pc))});
         table[0xFF] = Instruction(name: "RST 38H", instructionFunction: { [self] in RST_n_H(address: 38)});
         return table;
     }
@@ -283,8 +283,12 @@ extension CPU {
     func LD_16R_d16(register: ((U16)->Void),  value: U16) -> Void {
         register(value);
     }
-    func LD_SP_d16() {
-        registers.sp = FetchD16();
+    
+    func LD_SP_d16() { registers.sp = FetchD16(); }
+    
+    func LD_SP_HL() {
+        registers.sp = registers.getHLRegister();
+        EmulatorCycles(1);
     }
     
     func LD_HL_SP_plus_R8() {
@@ -314,6 +318,7 @@ extension CPU {
             registers.pc += 1;
             EmulatorCycles(CPUCycles: 1);
         }
+        else if currentOpcode == 0xE2 {  registers.pc += 1; }
 
     }
     
@@ -377,7 +382,7 @@ extension CPU {
         );
     }
     
-    func LDa16SP() -> Void {
+    func LD_a16_SP() -> Void {
         GB.BusWrite16Bit(address: FetchD16(), value: registers.sp);
         EmulatorCycles(CPUCycles: 2);
     }
@@ -463,13 +468,13 @@ extension CPU {
         }
         else if currentOpcode == 0x2A {
             EmuatorCycles(1);
-            let value = registers.GetHLRegister() &+ 1;
-            registers.SetHLRegister(value: value);
+            let value = registers.getHLRegister() &+ 1;
+            registers.setHLRegister(value: value);
         }
         else if currentOpcode == 0x3A {
             EmuatorCycles(1);
-            let value = registers.GetHLRegister() &- 1;
-            registers.SetHLRegister(value: value);
+            let value = registers.getHLRegister() &- 1;
+            registers.setHLRegister(value: value);
         }
         else if currentOpcode == 0xF2 {
             emulatorcycles(1);
@@ -479,14 +484,14 @@ extension CPU {
     }
     
     func ADD_HL_16R(register: UInt16) -> Void {
-        let value: UInt16 = registers.GetHLRegister() &+ register;
+        let value: UInt16 = registers.getHLRegister() &+ register;
         EmulatorCycles(CPUCycles: 1);
-        registers.SetHLRegister(value: value);
+        registers.setHLRegister(value: value);
         registers.setFlagsRegister(
             z: 2,
             n: 0,
-            h: ( (registers.GetHLRegister() & 0xFFF) + (register & 0xFFF) >= 0x1000 ? 1 : 0),
-            c: (UInt32(registers.GetHLRegister()) + UInt32(register) >= 0x10000 ? 1 : 0)
+            h: ( (registers.getHLRegister() & 0xFFF) + (register & 0xFFF) >= 0x1000 ? 1 : 0),
+            c: (UInt32(registers.getHLRegister()) + UInt32(register) >= 0x10000 ? 1 : 0)
         );
     }
     
@@ -609,9 +614,10 @@ extension CPU {
     func JP_COND_a16(condition: Bool) {
         if condition {
             registers.pc = FetchD16();
+            EmulatorCycles(1);
         }
         else if currentOpcode == 0xE9 {
-            registers.pc = registers.GetHLRegister();
+            registers.pc = registers.getHLRegister();
         }
         else {
             EmulatorCycles(CPUCycles: 2);
@@ -668,7 +674,7 @@ extension CPU {
                 case "l":
                     return registers.l;
                 case "(hl)":
-                return GB.BusRead(address: registers.GetHLRegister());
+                return GB.BusRead(address: registers.getHLRegister());
                 case "a":
                     return registers.a;
                 default:
@@ -692,7 +698,7 @@ extension CPU {
             case "l":
                 registers.l = value;
             case "(hl)":
-                GB.BusWrite(address: registers.GetHLRegister(), value: value);
+                GB.BusWrite(address: registers.getHLRegister(), value: value);
             default:
                 registers.a = value;
             }
@@ -860,22 +866,6 @@ extension CPU {
             }
         }
     }
-    func LDH_A_a8() -> Void {
-        let fetchedData = UInt16(GB.BusRead(address: registers.pc));
-        EmulatorCycles(CPUCycles: 1);
-        registers.a = GB.BusRead(address: 0xFF00 | fetchedData);
-        registers.pc += 1;
-        EmulatorCycles(CPUCycles: 1);
-    }
-    
-    func LDH_a8_A() -> Void {
-        let value: UInt16 = registers.pc
-        let address: UInt16 = UInt16(GB.BusRead(address: value)) | 0xFF00;
-        EmulatorCycles(CPUCycles: 1);
-        GB.BusWrite(address: address, value: registers.a);
-        registers.pc += 1;
-        EmulatorCycles(CPUCycles: 1);
-    }
     
     func RRCA() -> Void {
         let carryFlag: UInt8 = ( registers.a & 1 == 1 ? 1 : 0);
@@ -890,5 +880,48 @@ extension CPU {
     func LD_ADDR_a16_SP() {
         GB.BusWrite16Bit(address: FetchD16(), value: registers.sp);
         EmulatorCycles(CPUCycles: 2);
+    }
+    func CCF() -> Void {
+        registers.setFlagsRegister(z: 2, n: 0, h: 0, c: (isBitSet(bitPosition: CFlag, in: registers.f) ? 0 : 1));
+    }
+    
+    func HALT() -> Void { halted = true; }
+    
+    func POP_16R(register: ((U16)->Void)) {
+        register(stack.StackPop16Bit());
+        EmulatorCycles(2);
+    }
+    
+    func PUSH_16R(data: U16) {
+        stack.StackPush16Bit(data: data);
+        EmulatorCycles(3);
+    }
+    
+    func LDH_ADDR_a8_A() -> Void {
+        let address: UInt16 = UInt16(GB.BusRead(address: registers.pc)) | 0xFF00;
+        EmulatorCycles(CPUCycles: 1);
+        GB.BusWrite(address: address, value: registers.a);
+        registers.pc += 1;
+        EmulatorCycles(CPUCycles: 1);
+    }
+    
+    func LDH_A_ADDR_a8() -> Void {
+        let fetchedData = UInt16(GB.BusRead(address: registers.pc));
+        EmulatorCycles(CPUCycles: 1);
+        registers.a = GB.BusRead(address: 0xFF00 | fetchedData);
+        registers.pc += 1;
+        EmulatorCycles(CPUCycles: 1);
+    }
+    
+    func ADD_SP_r8() -> Void {
+        registers.sp = UInt16(truncatingIfNeeded: Int(registers.sp) + Int(Int8(bitPattern: GB.BusRead(address:  registers.pc))));
+        registers.pc += 1;
+        EmulatorCycles(CPUCycles: 3);
+        registers.setFlagsRegister(
+            z: 0,
+            n: 0,
+            h: ((registers.sp & 0xF) + UInt16(GB.BusRead(address: registers.pc) & 0xF) >= 0x10 ? 1 : 0),
+            c: (Int(registers.sp & 0xFF) + Int(GB.BusRead(address: registers.pc) & 0xFF) >= 0x100 ? 1 : 0)
+        );
     }
 }
