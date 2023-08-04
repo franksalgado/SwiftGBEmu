@@ -40,55 +40,54 @@ struct CPURegisters {
         }
     }
     
-    func getBCRegister() -> UInt16 {
-        let lowByte: UInt16 = UInt16(self.c);
-        let highByte: UInt16 = UInt16(self.b);
-        return lowByte | (highByte << 8);
-    }
+    var bc: U16 {
+        get {
+            let lowByte: UInt16 = UInt16(c);
+            let highByte: UInt16 = UInt16(b);
+            return lowByte | (highByte << 8);
+        }
+        set {
+            c = UInt8(newValue & 0xFF);
+            b = UInt8((newValue >> 8) & 0xFF);
+        }
+    };
 
-    mutating func setBCRegister(value: UInt16) -> Void {
-        self.c = UInt8(value & 0xFF);
-        self.b = UInt8((value >> 8) & 0xFF);
-    }
+    var af: U16 {
+        get {
+            let lowByte: UInt16 = UInt16(f);
+            let highByte: UInt16 = UInt16(a);
+            return lowByte | (highByte << 8);
+        }
+        set {
+            f = UInt8(newValue & 0xFF);
+            a = UInt8((newValue >> 8) & 0xFF);
+        }
+    };
 
-    // GetAFRegister - Gets the value of the AF register
-    func getAFRegister() -> UInt16 {
-        let lowByte: UInt16 = UInt16(self.f);
-        let highByte: UInt16 = UInt16(self.a);
-        return lowByte | (highByte << 8);
-    }
-
-    // SetAFRegister - Sets the value of the AF register
-    mutating func setAFRegister(value: UInt16) -> Void {
-        self.f = UInt8(value & 0xFF);
-        self.a = UInt8((value >> 8) & 0xFF);
-    }
-
-    // GetHLRegister - Gets the value of the HL register
-    func getHLRegister() -> UInt16 {
-        let lowByte: UInt16 = UInt16(self.l);
-        let highByte: UInt16 = UInt16(self.h);
-        return lowByte | (highByte << 8);
-    }
-
-    // SetHLRegister - Sets the value of the HL register
-    mutating func setHLRegister(value: UInt16) -> Void {
-        self.l = UInt8(value & 0xFF);
-        self.h = UInt8(value >> 8);
-    }
+    var hl: U16 {
+        get {
+            let lowByte: UInt16 = UInt16(l);
+            let highByte: UInt16 = UInt16(h);
+            return lowByte | (highByte << 8);
+        }
+        set {
+            l = UInt8(newValue & 0xFF);
+            h = UInt8((newValue >> 8) & 0xFF);
+        }
+    };
 
     // GetDERegister - Gets the value of the DE register
-    func getDERegister() -> UInt16 {
-        let lowByte: UInt16 = UInt16(self.e);
-        let highByte: UInt16 = UInt16(self.d);
-        return lowByte | (highByte << 8);
-    }
-
-    // SetDERegister - Sets the value of the DE register
-    mutating func setDERegister(value: UInt16) -> Void {
-        self.e = UInt8(value & 0xFF);
-        self.d = UInt8((value >> 8) & 0xFF);
-    }
+    var de: U16 {
+        get {
+            let lowByte: UInt16 = UInt16(e);
+            let highByte: UInt16 = UInt16(d);
+            return lowByte | (highByte << 8);
+        }
+        set {
+            e = UInt8(newValue & 0xFF);
+            d = UInt8((newValue >> 8) & 0xFF);
+        }
+    };
     
     init() {
         a = 0x01;
@@ -115,11 +114,13 @@ class CPU {
     var interruptEnableRegister: UInt8;
     var interruptFlags: UInt8;
     var stack: Stack = Stack()
-    //let InstructionsTable = GenerateOpcodes();
+    let InstructionsTable: [Instruction];
     var GB: GameBoy;
-    func CPUStep(GameBoy: GameBoy) -> Bool{
+    var totalInstructionClockCycles: Double;
+    let clockCycleDuration: Double = 1 / 4194304;
+    func CPUStep() -> Bool{
         if !halted {
-            currentOpcode = GameBoy.BusRead(address: registers.pc);
+            currentOpcode = GB.BusRead(address: registers.pc);
             EmulatorCycles(CPUCycles: 1);
             registers.pc += 1;
             //TestRomWrite();
@@ -127,6 +128,7 @@ class CPU {
            // print(self.registersState)
             //print(String(format: "0x%X", self.currentOpcode), self.InstructionsTable[Int(self.currentOpcode)].name)
             InstructionsTable[Int(currentOpcode)].instructionFunction();
+            //throttle(startTime: startTime);
         }
         else {
             EmulatorCycles(CPUCycles: 1);
@@ -135,7 +137,7 @@ class CPU {
             }
         }
         if interruptMasterEnable {
-            CPUHandleInterrupts();
+            //CPUHandleInterrupts();
             enablingIME = false;
         }
         if enablingIME {
@@ -143,6 +145,7 @@ class CPU {
         }
         return true;
     }
+    
     init(GameBoy: GameBoy){
         currentOpcode = 0;
         halted = false;
@@ -152,5 +155,7 @@ class CPU {
         interruptEnableRegister = 0;
         interruptFlags = 0;
         GB = GameBoy;
+        InstructionsTable = GenerateOpcodes();
+        totalInstructionClockCycles = 0;
     }
 }
