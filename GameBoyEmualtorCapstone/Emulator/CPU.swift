@@ -114,11 +114,12 @@ class CPU {
     var interruptEnableRegister: UInt8;
     var interruptFlags: UInt8;
     var stack: Stack = Stack()
-    let InstructionsTable: [Instruction];
+    lazy var InstructionsTable: [Instruction] = GenerateOpcodes();
     var GB: GameBoy;
     var totalInstructionClockCycles: Double;
     let clockCycleDuration: Double = 1 / 4194304;
     func CPUStep() -> Bool{
+       // let InstructionsTable: [Instruction] = GenerateOpcodes();
         if !halted {
             currentOpcode = GB.BusRead(address: registers.pc);
             EmulatorCycles(CPUCycles: 1);

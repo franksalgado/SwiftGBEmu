@@ -8,15 +8,10 @@
 import Foundation
 
 class GameBoy {
-    var LR35902: CPU?;
+    lazy var LR35902: CPU = CPU(GameBoy: self);
     var romData: [U8] = [0];
     var timer: Timer = Timer();
     var state: GameBoyState = GameBoyState();
-    
-    init() {
-        LR35902 = CPU(GameBoy: self);
-    }
-    
     
 }
 
