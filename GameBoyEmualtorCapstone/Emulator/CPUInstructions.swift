@@ -478,6 +478,13 @@ extension CPU {
     
     func XOR_R(value: UInt8) -> Void {
         registers.a ^= value;
+        registers.setFlagsRegister(
+            z: IsZero(value: registers.a),
+            n: 0,
+            h: 0,
+            c: 0
+        );
+        //if currentOpcode & 0xA0 == 0xA0 { return; }
         if currentOpcode == 0xAE {
             EmulatorCycles(CPUCycles: 1);
         }
@@ -485,12 +492,6 @@ extension CPU {
             registers.pc += 1;
             EmulatorCycles(CPUCycles: 1);
         }
-        registers.setFlagsRegister(
-            z: IsZero(value: registers.a),
-            n: 0,
-            h: 0,
-            c: 0
-        );
     }
     
     func OR_R(register: UInt8) -> Void {

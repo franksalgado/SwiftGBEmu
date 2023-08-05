@@ -76,7 +76,6 @@ struct CPURegisters {
         }
     };
 
-    // GetDERegister - Gets the value of the DE register
     var de: U16 {
         get {
             let lowByte: UInt16 = UInt16(e);
@@ -116,7 +115,7 @@ class CPU {
     var stack: Stack = Stack()
     lazy var InstructionsTable: [Instruction] = GenerateOpcodes();
     var GB: GameBoy;
-    var totalInstructionClockCycles: Double;
+    var totalInstructionClockCycles: Double = 0;
     let clockCycleDuration: Double = 1 / 4194304;
     func CPUStep() -> Bool{
        // let InstructionsTable: [Instruction] = GenerateOpcodes();
@@ -138,7 +137,7 @@ class CPU {
             }
         }
         if interruptMasterEnable {
-            //CPUHandleInterrupts();
+            CPUHandleInterrupts();
             enablingIME = false;
         }
         if enablingIME {
@@ -156,7 +155,6 @@ class CPU {
         interruptEnableRegister = 0;
         interruptFlags = 0;
         GB = GameBoy;
-        InstructionsTable = GenerateOpcodes();
         totalInstructionClockCycles = 0;
     }
 }

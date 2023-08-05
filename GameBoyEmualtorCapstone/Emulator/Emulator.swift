@@ -43,11 +43,12 @@ extension CPU {
             i += 1;
         }
     }
+    
     func throttle(startTime: CFAbsoluteTime)  {
         let currentTime =  CFAbsoluteTimeGetCurrent();
         if currentTime < (totalInstructionClockCycles * clockCycleDuration) + startTime {
             let sleepDuration = ((totalInstructionClockCycles * clockCycleDuration) + startTime) - currentTime;
-                        Thread.sleep(forTimeInterval: sleepDuration)
+            Thread.sleep(forTimeInterval: sleepDuration)
         }
         else {
             print("execution time greater. \(currentTime - startTime)");
