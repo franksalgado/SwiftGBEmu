@@ -553,7 +553,7 @@ extension CPU {
     
     
     func ADC_A_R(register: UInt8) -> Void {
-        var carryFlagVal: UInt8 = (!isBitSet(bitPosition: CFlag, in: registers.f) ? 0 : 1);
+        let carryFlagVal: UInt8 = (!isBitSet(bitPosition: CFlag, in: registers.f) ? 0 : 1);
         let halfCarry: U8 = ( (registers.a & 0xF) + (register & 0xF) + carryFlagVal > 0xF ? 1 : 0);
         let carryFlag: U8 = ( (Int(registers.a) + Int(register) + Int(carryFlagVal))  > 0xFF ? 1 : 0 );
         if currentOpcode == 0x8E {

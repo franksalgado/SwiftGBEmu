@@ -112,8 +112,9 @@ class CPU {
     var enablingIME: Bool;
     var interruptEnableRegister: UInt8;
     var interruptFlags: UInt8;
-    var stack: Stack = Stack()
+    var stack: Stack = Stack();
     lazy var InstructionsTable: [Instruction] = GenerateOpcodes();
+    lazy var timer: Timer = Timer(CPU: self);
     var GB: GameBoy;
     var totalInstructionClockCycles: Double = 0;
     let clockCycleDuration: Double = 1 / 4194304;

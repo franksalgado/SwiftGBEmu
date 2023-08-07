@@ -9,9 +9,11 @@ import Foundation
 
 class GameBoy {
     lazy var LR35902: CPU = CPU(GameBoy: self);
-    var romData: [U8] = [0];
-    var timer: Timer = Timer();
+    var romData: [U8]?;
     var state: GameBoyState = GameBoyState();
+    init() {
+        romData = GetROMData(fileURL: GetFileURL()!)
+    }
     
 }
 

@@ -27,7 +27,7 @@ extension CPU {
             while n < 4 {
                 let startTime = CFAbsoluteTimeGetCurrent();
                 //EmulatorStateInstance.ticks += 1;
-               // TimerTick();
+                timer.timerTick();
                 //PPUTick();
                 n += 1;
                 if CFAbsoluteTimeGetCurrent() < startTime + clockCycleDuration {

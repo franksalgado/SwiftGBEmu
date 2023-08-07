@@ -26,6 +26,7 @@ struct Timer {
     var timaCount: U16 = 0;
     var timaOverFlow: Bool = false;
     var timaFrequencies: [U16] = [1024, 16, 64, 256];
+    var cpu: CPU
     mutating func timerTick() {
         timaOverFlow = false;
         divCount &+= 1;
@@ -38,12 +39,15 @@ struct Timer {
             if TIMA == 255 && isBitSet(bitPosition: 1, in: TAC) {
                 TIMA = TMA;
                 timaOverFlow = true;
-                RequestInterrupt();
+                cpu.CPUHandleInterrupts();
                 return;
             }
             TIMA &+= 1;
             timaCount = 0;
         }
+    }
+    init(CPU: CPU) {
+        cpu = CPU;
     }
 }
 

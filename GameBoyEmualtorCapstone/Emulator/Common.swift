@@ -24,3 +24,12 @@ func isBitSet(bitPosition: UInt8, in value: UInt8) -> Bool {
 func IsZero(value: UInt8) -> UInt8 {
     return (value == 0 ? 1 : 0);
 }
+
+
+func SetBit(bitPosition: U8, in byte: inout U8) {
+     byte |= (1 << bitPosition);
+}
+
+func ZeroBit(bitPosition: U8, in byte: inout U8) {
+    byte &= ~(1 << bitPosition);
+}
