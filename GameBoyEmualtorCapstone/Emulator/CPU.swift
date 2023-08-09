@@ -121,14 +121,23 @@ class CPU {
     func CPUStep() -> Bool{
        // let InstructionsTable: [Instruction] = GenerateOpcodes();
         if !halted {
+            print("Bruv")
             currentOpcode = GB.BusRead(address: registers.pc);
+            print("Bruv2")
             EmulatorCycles(CPUCycles: 1);
+            print("Bruv3")
             registers.pc += 1;
-            //TestRomWrite();
-            //TestRomRead();
-           // print(self.registersState)
-            //print(String(format: "0x%X", self.currentOpcode), self.InstructionsTable[Int(self.currentOpcode)].name)
+            print("Bruv3")
+            GB.TestRomWrite();
+            print("Bruv4")
+            GB.TestRomRead();
+            print("Bruv5")
+            print(self.registers)
+            print("Bruv6")
+            print(String(format: "0x%X", self.currentOpcode), self.InstructionsTable[Int(self.currentOpcode)].name)
+            print("Bruv7")
             InstructionsTable[Int(currentOpcode)].instructionFunction();
+            print("Bruv8")
             //throttle(startTime: startTime);
         }
         else {
@@ -157,5 +166,8 @@ class CPU {
         interruptFlags = 0;
         GB = GameBoy;
         totalInstructionClockCycles = 0;
+    }
+    func RequestInterrupt(InterruptTypes: InterruptTypes) {
+        interruptFlags |= InterruptTypes.rawValue;
     }
 }

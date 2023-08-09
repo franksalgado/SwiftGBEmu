@@ -439,10 +439,13 @@ extension CPU {
     
     func LD_R_R(registerOne: inout U8, value: U8, specialCase: Bool) {
         registerOne = value;
+        print("sup1\n")
         if !specialCase { return; }
         else if currentOpcode & 0x06 == 0x06 && currentOpcode <= 0x26 ||
             currentOpcode & 0x0E == 0x0E && currentOpcode <= 0x3E {
+            print("sup2\n")
             registers.pc += 1;
+            print("sup3\n")
             EmulatorCycles(CPUCycles: 1);
         }
         else if currentOpcode & 0x06 == 0x06 && currentOpcode >= 0x46 ||

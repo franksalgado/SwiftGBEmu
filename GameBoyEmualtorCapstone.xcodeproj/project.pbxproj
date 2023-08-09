@@ -21,9 +21,11 @@
 		7001070B2A53A10A00B157B7 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7001070A2A53A10A00B157B7 /* Common.swift */; };
 		7001070F2A56B2B000B157B7 /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7001070E2A56B2B000B157B7 /* CPU.swift */; };
 		700107112A56B48D00B157B7 /* Bus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700107102A56B48D00B157B7 /* Bus.swift */; };
+		7016C8532A82F9F900450DEA /* SerialPort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7016C8522A82F9F900450DEA /* SerialPort.swift */; };
 		706864112A634CC40041C216 /* GameBoy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706864102A634CC40041C216 /* GameBoy.swift */; };
 		708647B42A69CDBE0080EDE6 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708647B32A69CDBE0080EDE6 /* Stack.swift */; };
 		7089A31C2A65DF5A008A7F2D /* CPUInstructions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7089A31B2A65DF5A008A7F2D /* CPUInstructions.swift */; };
+		708F8CD62A80B1E1004A8E33 /* RAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708F8CD52A80B1E1004A8E33 /* RAM.swift */; };
 		70B6EE9E2A7492E0002EB319 /* Emulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B6EE9D2A7492E0002EB319 /* Emulator.swift */; };
 		70CC2B002A7F0DFB004BDE9D /* Interrupts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70CC2AFF2A7F0DFB004BDE9D /* Interrupts.swift */; };
 /* End PBXBuildFile section */
@@ -65,9 +67,11 @@
 		7001070A2A53A10A00B157B7 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		7001070E2A56B2B000B157B7 /* CPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
 		700107102A56B48D00B157B7 /* Bus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bus.swift; sourceTree = "<group>"; };
+		7016C8522A82F9F900450DEA /* SerialPort.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SerialPort.swift; sourceTree = "<group>"; };
 		706864102A634CC40041C216 /* GameBoy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBoy.swift; sourceTree = "<group>"; };
 		708647B32A69CDBE0080EDE6 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		7089A31B2A65DF5A008A7F2D /* CPUInstructions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUInstructions.swift; sourceTree = "<group>"; };
+		708F8CD52A80B1E1004A8E33 /* RAM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAM.swift; sourceTree = "<group>"; };
 		70B6EE9D2A7492E0002EB319 /* Emulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Emulator.swift; sourceTree = "<group>"; };
 		70CC2AFF2A7F0DFB004BDE9D /* Interrupts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interrupts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -163,6 +167,8 @@
 				700030E32A74535000D1C418 /* Timer.swift */,
 				70B6EE9D2A7492E0002EB319 /* Emulator.swift */,
 				70CC2AFF2A7F0DFB004BDE9D /* Interrupts.swift */,
+				708F8CD52A80B1E1004A8E33 /* RAM.swift */,
+				7016C8522A82F9F900450DEA /* SerialPort.swift */,
 			);
 			path = Emulator;
 			sourceTree = "<group>";
@@ -297,6 +303,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7016C8532A82F9F900450DEA /* SerialPort.swift in Sources */,
+				708F8CD62A80B1E1004A8E33 /* RAM.swift in Sources */,
 				700106DE2A539E4000B157B7 /* Shaders.metal in Sources */,
 				706864112A634CC40041C216 /* GameBoy.swift in Sources */,
 				700106DA2A539E4000B157B7 /* GameViewController.swift in Sources */,

@@ -18,7 +18,7 @@ import Foundation
  */
 
 struct Timer {
-    var DIV: U16 = 0xAC00;
+    var DIV: U8 = 0xAB;
     var TIMA: U8 = 0;
     var TMA: U8 = 0;
     var TAC: U8 = 0
@@ -39,13 +39,44 @@ struct Timer {
             if TIMA == 255 && isBitSet(bitPosition: 1, in: TAC) {
                 TIMA = TMA;
                 timaOverFlow = true;
-                cpu.CPUHandleInterrupts();
+                cpu.RequestInterrupt(InterruptTypes: .TIMER);
                 return;
             }
             TIMA &+= 1;
             timaCount = 0;
         }
     }
+    func TimerRead(address: UInt16) -> UInt8 {
+        switch(address) {
+        case 0xFF04:
+            return DIV;
+        case 0xFF05:
+            return TIMA;
+        case 0xFF06:
+            return TMA;
+        case 0xFF07:
+            return TAC
+        default:
+            print("Failed Timer Read");
+            exit(-5);
+        }
+    }
+
+    mutating func TimerWrite(address: UInt16, value: UInt8) -> Void {
+        switch(address) {
+        case 0xFF04:
+            DIV = 0;
+        case 0xFF05:
+            TIMA = value;
+        case 0xFF06:
+            TMA = value;
+        case 0xFF07:
+            TAC = value;
+        default:
+            break;
+        }
+    }
+    
     init(CPU: CPU) {
         cpu = CPU;
     }

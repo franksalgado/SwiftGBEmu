@@ -8,7 +8,7 @@
 import Foundation
 
 struct GameBoyState {
-    var runing: Bool = true;
+    var running: Bool = true;
     var paused: Bool = false;
     var ticks: UInt64 = 0; 
 }
@@ -31,12 +31,12 @@ extension CPU {
                 //PPUTick();
                 n += 1;
                 if CFAbsoluteTimeGetCurrent() < startTime + clockCycleDuration {
-                    let sleepDuration = (startTime + clockCycleDuration) - CFAbsoluteTimeGetCurrent();
-                    Thread.sleep(forTimeInterval: sleepDuration);
+                    //let sleepDuration = (startTime + clockCycleDuration) - CFAbsoluteTimeGetCurrent();
+                    //Thread.sleep(forTimeInterval: sleepDuration);
                 }
                 else {
                     print("execution time greater. \(CFAbsoluteTimeGetCurrent() - startTime)");
-                    exit(-5);
+                   // exit(-5);
                 }
             }
             //DMATick();
