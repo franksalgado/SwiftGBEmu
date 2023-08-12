@@ -20,7 +20,7 @@ extension GameBoy {
             return ram.workingRAMWRead(address: address);
         case 0xE000..<0xFE00:
             //implement
-            break;
+            return 0;
         /*
         case 0xFE00..<0xFEA0:
             // ppu
@@ -67,11 +67,13 @@ extension GameBoy {
     func BusWrite(address: U16, value: U8) -> Void {
         switch address {
         case 0x0000..<0x8000:
-            cartridge.romData[Int(address)] = value;
+            print("Not yet implmented")
+            //cartridge.romData[Int(address)] = value;
         //case 0x8000..<0xA000:
             //PPUStateInstance.vram[Int(address &- 0x8000)] = value;
         case 0xA000..<0xC000:
-            cartridge.CartridgeWrite(value: value, address: address);
+            print("Not yet implmented")
+            //cartridge.CartridgeWrite(value: value, address: address);
         case 0xC000..<0xE000:
             ram.workingRAM[Int(address &- 0xC000)] = value;
         case 0xE000..<0xFE00:

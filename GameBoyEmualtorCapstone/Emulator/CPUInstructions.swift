@@ -12,7 +12,6 @@ extension CPU {
         //Void function cooresponding to the instruction
         var instructionFunction: (()->Void);
     }
-    
     func GenerateOpcodes() -> [Instruction] {
         var table = Array(repeating: Instruction(name: "Empty Spot", instructionFunction: EmptySpot), count: 0x100);
         table[0x00] = Instruction(name: "NOP", instructionFunction: NOP);
@@ -24,8 +23,8 @@ extension CPU {
         table[0x06] = Instruction(name: "LD B,d8", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: GB.BusRead(address: registers.pc), specialCase: true)});
         table[0x07] = Instruction(name: "RLCA", instructionFunction: RLCA);
         table[0x08] = Instruction(name: "LD (a16), SP", instructionFunction: LD_ADDR_a16_SP);
-        table[0x09] = Instruction(name: "ADD HL, BC", instructionFunction: {[self] in ADD_HL_16R(register: registers.hl)});
-        table[0x0A] = Instruction(name: "LD A, (BC)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: registers.hl), specialCase: true)});
+        table[0x09] = Instruction(name: "ADD HL, BC", instructionFunction: {[self] in ADD_HL_16R(register: registers.bc)});
+        table[0x0A] = Instruction(name: "LD A, (BC)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: registers.bc), specialCase: true)});
         table[0x0B] = Instruction(name: "DEC BC", instructionFunction: {[self] in DEC_16R(register: &registers.bc)});
         table[0x0C] = Instruction(name: "INC C", instructionFunction: {[self] in INC_R(register: &registers.c)});
         table[0x0D] = Instruction(name: "DEC C", instructionFunction: {[self] in DEC_R(register: &registers.c)});
@@ -33,7 +32,7 @@ extension CPU {
         table[0x0F] = Instruction(name: "RRCA", instructionFunction: RRCA);
         table[0x10] = Instruction(name: "STOP 0", instructionFunction: STOP_0);
         table[0x11] = Instruction(name: "LD DE, d16", instructionFunction: {[self] in LD_16R_d16(register: &registers.de, value: FetchD16())});
-        table[0x12] = Instruction(name: "LD (DE),a", instructionFunction: {[self] in LD_ADDR_r(address: registers.de, value: registers.a, specialCase: false)});
+        table[0x12] = Instruction(name: "LD (DE), A", instructionFunction: {[self] in LD_ADDR_r(address: registers.de, value: registers.a, specialCase: false)});
         table[0x13] = Instruction(name: "INC DE", instructionFunction: { [self] in INC_16R(register: &registers.de)});
         table[0x14] = Instruction(name: "INC D", instructionFunction: { [self] in INC_R(register: &registers.d)});
         table[0x15] = Instruction(name: "DEC D", instructionFunction: { [self] in DEC_R(register: &registers.d)});
@@ -64,7 +63,7 @@ extension CPU {
         table[0x2E] = Instruction(name: "LD L, d8", instructionFunction: {[self] in LD_R_R(registerOne: &registers.l, value: GB.BusRead(address: registers.pc), specialCase: true)});
         table[0x2F] = Instruction(name: "CPL", instructionFunction: CPL);
         table[0x30] = Instruction(name: "JR NC, r8", instructionFunction: { [self] in JR_COND_r8(condition: !isBitSet(bitPosition: CFlag, in: registers.f))});
-        table[0x31] = Instruction(name: "LD SP, d16", instructionFunction: LD_SP_d16);
+        table[0x31] = Instruction(name: "LD SP, d16", instructionFunction: {[self] in LD_16R_d16(register: &registers.sp, value: FetchD16())} );
         table[0x32] = Instruction(name: "LD (HL-),A", instructionFunction: {[self] in LD_ADDR_r(address: registers.hl, value: registers.a, specialCase: true)});
         table[0x33] = Instruction(name: "INC SP", instructionFunction: {[self] in INC_16R(register: &registers.sp)});
         table[0x34] = Instruction(name: "INC (HL)", instructionFunction: INC_ADDR_HL);
@@ -73,7 +72,7 @@ extension CPU {
         table[0x37] = Instruction(name: "SCF", instructionFunction: SCF);
         table[0x38] = Instruction(name: "JR C, r8", instructionFunction: { [self] in JR_COND_r8(condition: isBitSet(bitPosition: CFlag, in: registers.f))});
         table[0x39] = Instruction(name: "ADD HL, BC", instructionFunction: {[self] in ADD_HL_16R(register: registers.sp)});
-        table[0x3A] = Instruction(name: "LD A, (BC)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: registers.hl), specialCase: true)});
+        table[0x3A] = Instruction(name: "LD A, (BC)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: registers.bc), specialCase: true)});
         table[0x3B] = Instruction(name: "DEC SP", instructionFunction: {[self] in DEC_16R(register: &registers.sp)});
         table[0x3C] = Instruction(name: "INC A", instructionFunction: {[self] in INC_R(register: &registers.a)});
         table[0x3D] = Instruction(name: "DEC A", instructionFunction: {[self] in DEC_R(register: &registers.a)});
@@ -83,7 +82,7 @@ extension CPU {
         table[0x41] = Instruction(name: "LD B, C", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.c, specialCase: false)});
         table[0x42] = Instruction(name: "LD B, D", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.d, specialCase: false)});
         table[0x43] = Instruction(name: "LD B, E", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.e, specialCase: false)});
-        table[0x44] = Instruction(name: "LD B, H", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.b, specialCase: false)});
+        table[0x44] = Instruction(name: "LD B, H", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.h, specialCase: false)});
         table[0x45] = Instruction(name: "LD B, L", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.l, specialCase: false)});
         table[0x46] = Instruction(name: "LD B, (HL)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: GB.BusRead(address: registers.hl), specialCase: true)});
         table[0x47] = Instruction(name: "LD B, A", instructionFunction: { [self] in LD_R_R(registerOne: &registers.b, value: registers.a, specialCase: false)});
@@ -243,7 +242,7 @@ extension CPU {
         table[0xE6] = Instruction(name: "AND d8", instructionFunction: {[self] in AND_R(value: GB.BusRead(address: registers.pc))});
         table[0xE7] = Instruction(name: "RST 20H", instructionFunction: {[self] in RST_n_H(address: 20)});
         table[0xE8] = Instruction(name: "ADD SP, r8", instructionFunction: ADD_SP_r8);
-        table[0xE9] = Instruction(name: "JP (HL)", instructionFunction: {[self] in JP_COND_a16(condition: false)});
+        table[0xE9] = Instruction(name: "JP (HL)", instructionFunction: {[self] in JP_COND_a16(condition: false)});//false because handled by else if
         table[0xEA] = Instruction(name: "LD (a16), A", instructionFunction: {[self] in LD_ADDR_r(address: FetchD16(), value: registers.a, specialCase: false)});
         table[0xEE] = Instruction(name: "XOR d8", instructionFunction: {[self] in XOR_R(value: GB.BusRead(address: registers.pc))});
         table[0xEF] = Instruction(name: "RST 28H", instructionFunction: { [self] in RST_n_H(address: 28)});
@@ -255,7 +254,7 @@ extension CPU {
         table[0xF6] = Instruction(name: "OR d8", instructionFunction: {[self] in OR_R(register: GB.BusRead(address: registers.pc))});
         table[0xF7] = Instruction(name: "RST 30H", instructionFunction: {[self] in RST_n_H(address: 30)});
         table[0xF8] = Instruction(name: "LD HL, SP+r8", instructionFunction: LD_HL_SP_plus_R8);
-        table[0xF9] = Instruction(name: "LD SP, HL", instructionFunction: LD_SP_HL);
+        table[0xF9] = Instruction(name: "LD SP, HL", instructionFunction:{[self] in LD_16R_d16(register: &registers.sp, value: registers.hl)} );
         table[0xFA] = Instruction(name: "LD A, (a16)", instructionFunction: {[self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: FetchD16() ), specialCase: true)});
         table[0xFB] = Instruction(name: "EI", instructionFunction: EI);
         table[0xFE] = Instruction(name: "CP d8", instructionFunction: {[self] in CP_R(value: GB.BusRead(address: registers.pc))});
@@ -282,14 +281,10 @@ extension CPU {
     //0x01 0x11 0x21 0x31
     func LD_16R_d16(register: inout U16,  value: U16) -> Void {
         register = value;
+        if currentOpcode == 0xF9 { EmulatorCycles(CPUCycles: 1); }
     }
     
-    func LD_SP_d16() { registers.sp = FetchD16(); }
-    
-    func LD_SP_HL() {
-        registers.sp = registers.hl;
-        EmulatorCycles(CPUCycles: 1);
-    }
+
     
     func LD_HL_SP_plus_R8() {
         let value: UInt8 = GB.BusRead(address: registers.pc);
@@ -319,7 +314,7 @@ extension CPU {
             registers.pc += 1;
             EmulatorCycles(CPUCycles: 1);
         }
-        else if currentOpcode == 0xE2 {  registers.pc += 1; }
+        else if currentOpcode == 0xE2 {  EmulatorCycles(CPUCycles: 1); }
 
     }
     
@@ -344,7 +339,7 @@ extension CPU {
     
     func DEC_ADDR_HL() {
         let value: U8 = GB.BusRead(address: registers.hl) &- 1;
-        GB.BusWrite(address: registers.hl, value: value & 0xFF);
+        GB.BusWrite(address: registers.hl, value: value);
         let halfCarry: UInt8 = ( (value & 0x0F) == 0x0F ? 1 : 0);
         registers.setFlagsRegister(z: IsZero(value: value) , n: 1, h: halfCarry, c: 2);
         EmulatorCycles(CPUCycles: 2);
@@ -353,15 +348,15 @@ extension CPU {
     func DAA() -> Void {
         var u: UInt8 = 0
         var carryFlag: UInt8 = 0;
-        if isBitSet(bitPosition: registers.f, in: HFlag) || (!isBitSet(bitPosition: registers.f, in: NFlag) && (registers.a & 0xF) > 9) {
+        if isBitSet(bitPosition: HFlag, in: registers.f) || (!isBitSet(bitPosition: NFlag, in: registers.f) && (registers.a & 0xF) > 9) {
                 u = 6;
         }
 
-        if isBitSet(bitPosition: registers.f, in: CFlag) || (!isBitSet(bitPosition: registers.f, in: NFlag) && registers.a > 0x99) {
+        if isBitSet(bitPosition: CFlag, in: registers.f) || (!isBitSet(bitPosition: NFlag, in: registers.f) && registers.a > 0x99) {
             u |= 0x60;
             carryFlag = 1;
         }
-        if isBitSet(bitPosition: registers.f, in: NFlag) {
+        if isBitSet(bitPosition: NFlag, in: registers.f) {
             registers.a =  registers.a &- u;
         }
         else {
@@ -370,13 +365,10 @@ extension CPU {
         registers.setFlagsRegister(z: IsZero(value: registers.a), n: 2, h: 0, c: carryFlag);
     }
     
-    func LD_a16_SP() -> Void {
-        GB.BusWrite16Bit(address: FetchD16(), value: registers.sp);
-        EmulatorCycles(CPUCycles: 2);
-    }
     
     func DEC_16R(register: inout U16) {
         register &-= 1;
+        EmulatorCycles(CPUCycles: 1);
     }
     
     func INC_R(register: inout U8) {
@@ -390,7 +382,7 @@ extension CPU {
     }
     
     func DEC_R(register: inout U8) {
-        register &+= 1;
+        register &-= 1;
         registers.setFlagsRegister(
             z: (register == 0 ? 1 : 0),
             n: 1,
@@ -402,14 +394,15 @@ extension CPU {
     func RLA() -> Void {
         let carryFlag: UInt8 = (isBitSet(bitPosition: 7, in: registers.a) ? 1 : 0);
         registers.a <<= 1;
-        if isBitSet(bitPosition: registers.f, in: CFlag) { registers.a |= 1; }
+        if isBitSet(bitPosition: CFlag, in: registers.f) { registers.a |= 1;
+        }
         registers.setFlagsRegister(z: 0, n: 0, h: 0, c: carryFlag);
     }
     
     func RRA() -> Void {
         let carryFlag: UInt8 = registers.a & 1;
         registers.a >>= 1;
-        if isBitSet(bitPosition: registers.f, in: CFlag) { registers.a |= (1 << 7); }
+        if isBitSet(bitPosition: CFlag, in: registers.f) { registers.a |= (1 << 7); }
         registers.setFlagsRegister(z: 0, n: 0, h: 0, c: carryFlag);
     }
     
@@ -431,7 +424,7 @@ extension CPU {
     
     //07
     func RLCA() {
-        let carryFlagVal: UInt8 = ( registers.a & (1 << 7) == (1 << 7) ? 1 : 0);
+        let carryFlagVal: UInt8 = ( isBitSet(bitPosition: 7, in: registers.a) ? 1 : 0);
         registers.a <<= 1;
         registers.a |= carryFlagVal;
         registers.setFlagsRegister(z: 0, n: 0, h: 0, c: carryFlagVal);
@@ -439,13 +432,10 @@ extension CPU {
     
     func LD_R_R(registerOne: inout U8, value: U8, specialCase: Bool) {
         registerOne = value;
-        print("sup1\n")
         if !specialCase { return; }
         else if currentOpcode & 0x06 == 0x06 && currentOpcode <= 0x26 ||
             currentOpcode & 0x0E == 0x0E && currentOpcode <= 0x3E {
-            print("sup2\n")
             registers.pc += 1;
-            print("sup3\n")
             EmulatorCycles(CPUCycles: 1);
         }
         else if currentOpcode & 0x06 == 0x06 && currentOpcode >= 0x46 ||
@@ -463,19 +453,19 @@ extension CPU {
         }
         else if currentOpcode == 0xF2 {
             EmulatorCycles(CPUCycles: 1);
-            registers.pc += 1;
         }
         else if currentOpcode == 0xFA { EmulatorCycles(CPUCycles: 1); }
     }
     
     func ADD_HL_16R(register: UInt16) -> Void {
+        let val = registers.hl;
+        registers.hl &+= register;
         registers.setFlagsRegister(
             z: 2,
             n: 0,
-            h: ( (registers.hl & 0xFFF) + (register & 0xFFF) >= 0x1000 ? 1 : 0),
-            c: (UInt32(registers.hl) + UInt32(register) >= 0x10000 ? 1 : 0)
+            h: ( (val & 0xFFF) + (register & 0xFFF) >= 0x1000 ? 1 : 0),
+            c: (UInt32(val) + UInt32(register) >= 0x10000 ? 1 : 0)
         );
-        registers.hl &+= register;
         EmulatorCycles(CPUCycles: 1);
     }
     
@@ -547,9 +537,9 @@ extension CPU {
     
     func ADD_A_R(value: U8) {
         let halfCarry: UInt8 = (
-            ((registers.a & 0xF) + (registers.b & 0xF)) >= 0x10 ? 1 : 0 );
+            ((registers.a & 0xF) + (value & 0xF)) >= 0x10 ? 1 : 0 );
         let carryFlag: UInt8 = (
-            (Int(registers.a & 0xFF) + Int(registers.b & 0xFF)) >= 0x100 ? 1 : 0);
+            (Int(registers.a & 0xFF) + Int(value & 0xFF)) >= 0x100 ? 1 : 0);
         registers.a &+= value;
         registers.setFlagsRegister(z: IsZero(value: registers.a) , n: 0, h: halfCarry, c: carryFlag);
     }
@@ -606,6 +596,7 @@ extension CPU {
         }
         else if currentOpcode == 0xE9 {
             registers.pc = registers.hl;
+            print("zaza")
         }
         else {
             EmulatorCycles(CPUCycles: 2);
@@ -627,10 +618,10 @@ extension CPU {
         );
     }
     
-    func SBC_A_R(register: UInt8) -> Void {
+    func SBC_A_R(register: UInt8) {
         var halfCarry: UInt8 = 0;
         var carryFlag: UInt8 = 0;
-        let carryFlagVal: UInt8 = (isBitSet(bitPosition: registers.f, in: CFlag) ? 1 : 0);
+        let carryFlagVal: UInt8 = (isBitSet(bitPosition: CFlag, in: registers.f) ? 1 : 0);
         if (Int(registers.a & 0xF) - Int(register & 0xF) - Int(carryFlagVal)) < 0x0 {
             halfCarry = 1;
         }
@@ -876,7 +867,7 @@ extension CPU {
     }
     
     func LDH_ADDR_a8_A() -> Void {
-        let address: UInt16 = UInt16(GB.BusRead(address: registers.pc)) | 0xFF00;
+        let address = UInt16(GB.BusRead(address: registers.pc)) | 0xFF00;
         EmulatorCycles(CPUCycles: 1);
         GB.BusWrite(address: address, value: registers.a);
         registers.pc += 1;

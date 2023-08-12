@@ -18,6 +18,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         var cartheader = CartridgeHeader(romData: romdata!)
         var cartridge = Cartridge(fileURL: url!, cartridgeHeader: cartheader, romData: romdata!)
         var gameboy = GameBoy(cartridge: cartridge);
+        //gameboy.LR35902.InstructionsTable[0x2A]
+        //exit(-5)
         gameboy.startGameBoy();
     }
 

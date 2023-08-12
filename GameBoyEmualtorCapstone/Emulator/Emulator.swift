@@ -35,7 +35,7 @@ extension CPU {
                     //Thread.sleep(forTimeInterval: sleepDuration);
                 }
                 else {
-                    print("execution time greater. \(CFAbsoluteTimeGetCurrent() - startTime)");
+                    //print("execution time greater. \(CFAbsoluteTimeGetCurrent() - startTime)");
                    // exit(-5);
                 }
             }

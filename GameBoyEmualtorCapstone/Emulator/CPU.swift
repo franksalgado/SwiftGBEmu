@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CPURegisters {
+class CPURegisters {
     //a is accumulator register, f is flag register
     //register pairs can be combined to be one 16 bit register
     var a: UInt8;
@@ -26,7 +26,7 @@ struct CPURegisters {
     var sp: UInt16;
     var pc: UInt16;
     
-    mutating func setFlagsRegister(z: UInt8, n: UInt8, h: UInt8, c: UInt8) -> Void {
+    func setFlagsRegister(z: UInt8, n: UInt8, h: UInt8, c: UInt8) -> Void {
         let flagsArray: [UInt8] = [z, n, h, c];
         var index: Int = 7;
         for bit in flagsArray {
@@ -88,6 +88,14 @@ struct CPURegisters {
         }
     };
     
+    func printRegisters() {
+            print("Register Values:")
+            print("a: \(a), f: \(f)")
+            print("b: \(b), c: \(c)")
+            print("d: \(d), e: \(e)")
+            print("h: \(h), l: \(l)")
+            print("sp: \(sp), pc: \(pc)")
+        }
     init() {
         a = 0x01;
         f = 0xB0;
@@ -118,27 +126,21 @@ class CPU {
     var GB: GameBoy;
     var totalInstructionClockCycles: Double = 0;
     let clockCycleDuration: Double = 1 / 4194304;
+    //var specialInstruction = false;
     func CPUStep() -> Bool{
        // let InstructionsTable: [Instruction] = GenerateOpcodes();
         if !halted {
-            print("Bruv")
+            //specialInstruction = false;
             currentOpcode = GB.BusRead(address: registers.pc);
-            print("Bruv2")
             EmulatorCycles(CPUCycles: 1);
-            print("Bruv3")
             registers.pc += 1;
-            print("Bruv3")
             GB.TestRomWrite();
-            print("Bruv4")
             GB.TestRomRead();
-            print("Bruv5")
-            print(self.registers)
-            print("Bruv6")
+            //registers.printRegisters();
             print(String(format: "0x%X", self.currentOpcode), self.InstructionsTable[Int(self.currentOpcode)].name)
-            print("Bruv7")
             InstructionsTable[Int(currentOpcode)].instructionFunction();
-            print("Bruv8")
             //throttle(startTime: startTime);
+            //if specialInstruction { HandleSpecialInstructions(); }
         }
         else {
             EmulatorCycles(CPUCycles: 1);
