@@ -277,14 +277,12 @@ extension CPU {
     
     // Performs no operation 0x00
     func NOP() -> Void {}
-    
+
     //0x01 0x11 0x21 0x31
     func LD_16R_d16(register: inout U16,  value: U16) -> Void {
         register = value;
         if currentOpcode == 0xF9 { EmulatorCycles(CPUCycles: 1); }
     }
-    
-
     
     func LD_HL_SP_plus_R8() {
         let value: UInt8 = GB.BusRead(address: registers.pc);
@@ -471,12 +469,6 @@ extension CPU {
     
     func XOR_R(value: UInt8) -> Void {
         registers.a ^= value;
-        registers.setFlagsRegister(
-            z: IsZero(value: registers.a),
-            n: 0,
-            h: 0,
-            c: 0
-        );
         //if currentOpcode & 0xA0 == 0xA0 { return; }
         if currentOpcode == 0xAE {
             EmulatorCycles(CPUCycles: 1);
@@ -485,11 +477,21 @@ extension CPU {
             registers.pc += 1;
             EmulatorCycles(CPUCycles: 1);
         }
+        registers.setFlagsRegister(
+            z: IsZero(value: registers.a),
+            n: 0,
+            h: 0,
+            c: 0
+        );
     }
     
     func OR_R(register: UInt8) -> Void {
         registers.a |= register;
         if currentOpcode == 0xAE {
+            EmulatorCycles(CPUCycles: 1);
+        }
+        else if currentOpcode == 0xF6 {
+            registers.pc += 1;
             EmulatorCycles(CPUCycles: 1);
         }
         registers.setFlagsRegister(
@@ -541,6 +543,10 @@ extension CPU {
         let carryFlag: UInt8 = (
             (Int(registers.a & 0xFF) + Int(value & 0xFF)) >= 0x100 ? 1 : 0);
         registers.a &+= value;
+        if currentOpcode == 0xC6 {
+            registers.pc += 1;
+            EmulatorCycles(CPUCycles: 1);
+        }
         registers.setFlagsRegister(z: IsZero(value: registers.a) , n: 0, h: halfCarry, c: carryFlag);
     }
     
@@ -581,7 +587,7 @@ extension CPU {
         if conditon {
             EmulatorCycles(CPUCycles: 3);
             registers.pc = stack.StackPop16Bit();
-            registers.sp &+= 2;
+            registers.sp += 2;
         }
         if currentOpcode == 0xD9 {
             interruptMasterEnable = true;
@@ -610,6 +616,10 @@ extension CPU {
         }
         let a = registers.a;
         registers.a &-= value;
+        if currentOpcode == 0xD6 {
+            registers.pc += 1;
+            EmulatorCycles(CPUCycles: 1);
+        }
         registers.setFlagsRegister(
             z: IsZero(value: registers.a),
             n: 1,
@@ -855,7 +865,12 @@ extension CPU {
     func HALT() -> Void { halted = true; }
     
     func POP_16R(register: inout U16) {
-        register = stack.StackPop16Bit();
+        if currentOpcode == 0xF1 {
+            register = stack.StackPop16Bit() & 0xFFF0;
+        }
+        else {
+            register = stack.StackPop16Bit();
+        }
         registers.sp &+= 2;
         EmulatorCycles(CPUCycles: 2);
     }

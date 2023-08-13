@@ -127,9 +127,11 @@ class CPU {
     var totalInstructionClockCycles: Double = 0;
     let clockCycleDuration: Double = 1 / 4194304;
     //var specialInstruction = false;
+    var arrayIndex = 0
     func CPUStep() -> Bool{
        // let InstructionsTable: [Instruction] = GenerateOpcodes();
         if !halted {
+            print("arrind\(arrayIndex)")
             //specialInstruction = false;
             currentOpcode = GB.BusRead(address: registers.pc);
             EmulatorCycles(CPUCycles: 1);
@@ -141,6 +143,7 @@ class CPU {
             InstructionsTable[Int(currentOpcode)].instructionFunction();
             //throttle(startTime: startTime);
             //if specialInstruction { HandleSpecialInstructions(); }
+            arrayIndex += 1
         }
         else {
             EmulatorCycles(CPUCycles: 1);

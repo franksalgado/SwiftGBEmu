@@ -33,3 +33,7 @@ func SetBit(bitPosition: U8, in byte: inout U8) {
 func ZeroBit(bitPosition: U8, in byte: inout U8) {
     byte &= ~(1 << bitPosition);
 }
+
+
+
+
