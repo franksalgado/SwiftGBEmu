@@ -31,12 +31,8 @@ extension CPU {
                 //PPUTick();
                 n += 1;
                 if CFAbsoluteTimeGetCurrent() < startTime + clockCycleDuration {
-                    //let sleepDuration = (startTime + clockCycleDuration) - CFAbsoluteTimeGetCurrent();
-                    //Thread.sleep(forTimeInterval: sleepDuration);
-                }
-                else {
-                    //print("execution time greater. \(CFAbsoluteTimeGetCurrent() - startTime)");
-                   // exit(-5);
+                    let sleepDuration = (startTime + clockCycleDuration) - CFAbsoluteTimeGetCurrent();
+                    Thread.sleep(forTimeInterval: sleepDuration);
                 }
             }
             //DMATick();

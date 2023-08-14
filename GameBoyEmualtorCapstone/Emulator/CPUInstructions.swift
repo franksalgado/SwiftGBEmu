@@ -56,7 +56,7 @@ extension CPU {
         table[0x27] = Instruction(name: "DAA", instructionFunction: DAA);
         table[0x28] = Instruction(name: "JR Z r8", instructionFunction: { [self] in JR_COND_r8(condition: isBitSet(bitPosition: ZFlag, in: registers.f))});
         table[0x29] = Instruction(name: "ADD HL, HL", instructionFunction: {[self] in ADD_HL_16R(register: registers.hl)});
-        table[0x2A] = Instruction(name: "LD A, (HL)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: registers.hl), specialCase: true)});
+        table[0x2A] = Instruction(name: "LD A, (HL+)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: registers.hl), specialCase: true)});
         table[0x2B] = Instruction(name: "DEC HL", instructionFunction: {[self] in DEC_16R(register: &registers.hl)});
         table[0x2C] = Instruction(name: "INC L", instructionFunction: {[self] in INC_R(register: &registers.l)});
         table[0x2D] = Instruction(name: "DEC L", instructionFunction: {[self] in DEC_R(register: &registers.l)});
@@ -72,7 +72,7 @@ extension CPU {
         table[0x37] = Instruction(name: "SCF", instructionFunction: SCF);
         table[0x38] = Instruction(name: "JR C, r8", instructionFunction: { [self] in JR_COND_r8(condition: isBitSet(bitPosition: CFlag, in: registers.f))});
         table[0x39] = Instruction(name: "ADD HL, BC", instructionFunction: {[self] in ADD_HL_16R(register: registers.sp)});
-        table[0x3A] = Instruction(name: "LD A, (BC)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: registers.bc), specialCase: true)});
+        table[0x3A] = Instruction(name: "LD A, (HL-)", instructionFunction: { [self] in LD_R_R(registerOne: &registers.a, value: GB.BusRead(address: registers.hl), specialCase: true)});
         table[0x3B] = Instruction(name: "DEC SP", instructionFunction: {[self] in DEC_16R(register: &registers.sp)});
         table[0x3C] = Instruction(name: "INC A", instructionFunction: {[self] in INC_R(register: &registers.a)});
         table[0x3D] = Instruction(name: "DEC A", instructionFunction: {[self] in DEC_R(register: &registers.a)});
@@ -312,7 +312,7 @@ extension CPU {
             registers.pc += 1;
             EmulatorCycles(CPUCycles: 1);
         }
-        else if currentOpcode == 0xE2 {  EmulatorCycles(CPUCycles: 1); }
+        else if currentOpcode == 0xE2 || currentOpcode == 0xEA {  EmulatorCycles(CPUCycles: 1); }
 
     }
     
@@ -384,7 +384,7 @@ extension CPU {
         registers.setFlagsRegister(
             z: (register == 0 ? 1 : 0),
             n: 1,
-            h: (register & 0x0F == 0 ? 1 : 0),
+            h: (register & 0x0F == 0x0F ? 1 : 0),
             c: 2
         );
     }
@@ -473,7 +473,7 @@ extension CPU {
         if currentOpcode == 0xAE {
             EmulatorCycles(CPUCycles: 1);
         }
-        if currentOpcode == 0xEE {
+        else if currentOpcode == 0xEE {
             registers.pc += 1;
             EmulatorCycles(CPUCycles: 1);
         }
@@ -508,7 +508,7 @@ extension CPU {
             EmulatorCycles(CPUCycles: 1);
         }
         registers.setFlagsRegister(
-            z: IsZero(value: (Int(registers.a) - Int(value) == 0 ? 1 : 0) ),
+            z: (Int(registers.a) - Int(value) == 0 ? 1 : 0),
             n: 1,
             h: ( (Int(registers.a & 0x0F) - Int(value & 0x0F)) < 0x0 ? 1 : 0 ),
             c: ( (Int(registers.a) - Int(value)) < 0 ? 1 : 0 )
@@ -519,8 +519,7 @@ extension CPU {
         if condition {
             let fetchedD16 = FetchD16();
             EmulatorCycles(CPUCycles: 2);
-            stack.StackPush16Bit(data: registers.pc);
-            registers.sp &-= 2;
+            StackPush16Bit(data: registers.pc);
             registers.pc = fetchedD16;
             EmulatorCycles(CPUCycles: 1);
         }
@@ -531,8 +530,7 @@ extension CPU {
     }
     //0xC7, 0xD7, 0xE7, 0xF7, 0xCF, 0xDF, 0xEF, 0xFF,
     func RST_n_H(address: UInt16) -> Void {
-        stack.StackPush16Bit(data: registers.pc);
-        registers.sp &-= 2;
+        StackPush16Bit(data: registers.pc);
         registers.pc = address;
         EmulatorCycles(CPUCycles: 3);
     }
@@ -586,8 +584,7 @@ extension CPU {
     func RET_COND(conditon: Bool) {
         if conditon {
             EmulatorCycles(CPUCycles: 3);
-            registers.pc = stack.StackPop16Bit();
-            registers.sp += 2;
+            registers.pc = StackPop16Bit();
         }
         if currentOpcode == 0xD9 {
             interruptMasterEnable = true;
@@ -602,7 +599,6 @@ extension CPU {
         }
         else if currentOpcode == 0xE9 {
             registers.pc = registers.hl;
-            print("zaza")
         }
         else {
             EmulatorCycles(CPUCycles: 2);
@@ -866,18 +862,16 @@ extension CPU {
     
     func POP_16R(register: inout U16) {
         if currentOpcode == 0xF1 {
-            register = stack.StackPop16Bit() & 0xFFF0;
+            register = StackPop16Bit() & 0xFFF0;
         }
         else {
-            register = stack.StackPop16Bit();
+            register = StackPop16Bit();
         }
-        registers.sp &+= 2;
         EmulatorCycles(CPUCycles: 2);
     }
     
     func PUSH_16R(data: U16) {
-        stack.StackPush16Bit(data: data);
-        registers.sp &-= 2;
+        StackPush16Bit(data: data);
         EmulatorCycles(CPUCycles: 3);
     }
     
@@ -898,14 +892,15 @@ extension CPU {
     }
     
     func ADD_SP_r8() -> Void {
-        registers.sp = UInt16(truncatingIfNeeded: Int(registers.sp) + Int(Int8(bitPattern: GB.BusRead(address:  registers.pc))));
-        registers.pc += 1;
-        EmulatorCycles(CPUCycles: 3);
+        let r8 = GB.BusRead(address: registers.pc);
         registers.setFlagsRegister(
             z: 0,
             n: 0,
-            h: ((registers.sp & 0xF) + UInt16(GB.BusRead(address: registers.pc) & 0xF) >= 0x10 ? 1 : 0),
-            c: (Int(registers.sp & 0xFF) + Int(GB.BusRead(address: registers.pc) & 0xFF) >= 0x100 ? 1 : 0)
+            h: ((registers.sp & 0xF) + UInt16(r8 & 0xF) >= 0x10 ? 1 : 0),
+            c: (Int(registers.sp & 0xFF) + Int(r8 & 0xFF) >= 0x100 ? 1 : 0)
         );
+        registers.sp = UInt16(truncatingIfNeeded: Int(registers.sp) + Int(Int8(bitPattern: r8)));
+        registers.pc += 1;
+        EmulatorCycles(CPUCycles: 3);
     }
 }

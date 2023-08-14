@@ -120,30 +120,22 @@ class CPU {
     var enablingIME: Bool;
     var interruptEnableRegister: UInt8;
     var interruptFlags: UInt8;
-    var stack: Stack = Stack();
     lazy var InstructionsTable: [Instruction] = GenerateOpcodes();
     lazy var timer: Timer = Timer(CPU: self);
     var GB: GameBoy;
     var totalInstructionClockCycles: Double = 0;
     let clockCycleDuration: Double = 1 / 4194304;
-    //var specialInstruction = false;
-    var arrayIndex = 0
     func CPUStep() -> Bool{
-       // let InstructionsTable: [Instruction] = GenerateOpcodes();
         if !halted {
-            print("arrind\(arrayIndex)")
-            //specialInstruction = false;
             currentOpcode = GB.BusRead(address: registers.pc);
             EmulatorCycles(CPUCycles: 1);
             registers.pc += 1;
             GB.TestRomWrite();
             GB.TestRomRead();
             //registers.printRegisters();
-            print(String(format: "0x%X", self.currentOpcode), self.InstructionsTable[Int(self.currentOpcode)].name)
+            //print(String(format: "0x%X", self.currentOpcode), self.InstructionsTable[Int(self.currentOpcode)].name)
             InstructionsTable[Int(currentOpcode)].instructionFunction();
             //throttle(startTime: startTime);
-            //if specialInstruction { HandleSpecialInstructions(); }
-            arrayIndex += 1
         }
         else {
             EmulatorCycles(CPUCycles: 1);

@@ -17,7 +17,7 @@ extension CPU {
     }
     
     func InterruptHandle(address: UInt16) -> Void {
-        stack.StackPush16Bit(data: registers.pc);
+        StackPush16Bit(data: registers.pc);
         registers.pc = address;
     }
 

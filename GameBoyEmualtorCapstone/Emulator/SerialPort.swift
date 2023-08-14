@@ -22,7 +22,11 @@ extension GameBoy {
     func TestRomRead() -> Void {
         if TestRomMessage[0] != 0 {
             let messageString = String(TestRomMessage.map { Character(UnicodeScalar($0)) });
-            print(messageString);
+            
+            if messageString.contains("Passed") || messageString.contains("Failed") {
+                        print(messageString)
+                    }
+            //print(messageString);
         }
     }
 }
