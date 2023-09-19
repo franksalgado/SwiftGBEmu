@@ -645,49 +645,49 @@ extension CPU {
     
     //CB instruction table functions
     func GetRegisterValueCB(register: String) -> UInt8 {
-            switch register {
-                case "b":
-                    return registers.b;
-                case "c":
-                    return registers.c;
-                case "d":
-                    return registers.d;
-                case "e":
-                    return registers.e;
-                case "h":
-                    return registers.h;
-                case "l":
-                    return registers.l;
-                case "(hl)":
-                return GB.BusRead(address: registers.hl);
-                case "a":
-                    return registers.a;
-                default:
-                    print("Invalid");
-                    exit(-5);
-            }
-        }
-
-        func SetRegisterValueCB(register: String, value: UInt8) -> Void {
-            switch register {
+        switch register {
             case "b":
-                registers.b = value;
+                return registers.b;
             case "c":
-                registers.c = value;
+                return registers.c;
             case "d":
-                registers.d = value;
+                return registers.d;
             case "e":
-                registers.e = value;
+                return registers.e;
             case "h":
-                registers.h = value;
+                return registers.h;
             case "l":
-                registers.l = value;
+                return registers.l;
             case "(hl)":
-                GB.BusWrite(address: registers.hl, value: value);
+            return GB.BusRead(address: registers.hl);
+            case "a":
+                return registers.a;
             default:
-                registers.a = value;
-            }
+                print("Invalid");
+                exit(-5);
         }
+    }
+
+    func SetRegisterValueCB(register: String, value: UInt8) -> Void {
+        switch register {
+        case "b":
+            registers.b = value;
+        case "c":
+            registers.c = value;
+        case "d":
+            registers.d = value;
+        case "e":
+            registers.e = value;
+        case "h":
+            registers.h = value;
+        case "l":
+            registers.l = value;
+        case "(hl)":
+            GB.BusWrite(address: registers.hl, value: value);
+        default:
+            registers.a = value;
+        }
+    }
 
     func RLCCB(register: String) -> Void {
         var carryFlag: UInt8 = 0;

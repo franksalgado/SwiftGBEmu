@@ -13,7 +13,9 @@ struct GameBoyState {
     var ticks: UInt64 = 0; 
 }
 
-
+/*
+ CPU Clock speed is 4.19 mHZ.
+ One machine cyclee = */
 extension CPU {
     /*
     func EmulatorCycles(CPUCycles: Double) {
@@ -21,35 +23,24 @@ extension CPU {
     }
      */
     func EmulatorCycles(CPUCycles: Double) -> Void {
-        var i: Double = 0;
-        var n: Double = 0;
-        while i < CPUCycles {
-            while n < 4 {
-                let startTime = CFAbsoluteTimeGetCurrent();
+        let startTime = CFAbsoluteTimeGetCurrent();
+        var machineCycles: Double = 0;
+        var tCycles: Double = 0;
+        var audioTicks: Double = 0;
+        while machineCycles < CPUCycles {
+            while tCycles < 4 {
                 //EmulatorStateInstance.ticks += 1;
                 timer.timerTick();
                 //PPUTick();
-                n += 1;
-                if CFAbsoluteTimeGetCurrent() < startTime + clockCycleDuration {
-                    let sleepDuration = (startTime + clockCycleDuration) - CFAbsoluteTimeGetCurrent();
-                    Thread.sleep(forTimeInterval: sleepDuration);
-                }
+                tCycles += 1;
             }
             //DMATick();
-            i += 1;
+            machineCycles += 1;
         }
-    }
-    
-    func throttle(startTime: CFAbsoluteTime)  {
-        let currentTime =  CFAbsoluteTimeGetCurrent();
-        if currentTime < (totalInstructionClockCycles * clockCycleDuration) + startTime {
-            let sleepDuration = ((totalInstructionClockCycles * clockCycleDuration) + startTime) - currentTime;
-            Thread.sleep(forTimeInterval: sleepDuration)
+        if CFAbsoluteTimeGetCurrent() < startTime + machineCycleDuration * CPUCycles {
+            let sleepDuration = (startTime + machineCycleDuration * CPUCycles) - CFAbsoluteTimeGetCurrent();
+            //print("sleeping for \(sleepDuration)");
+            Thread.sleep(forTimeInterval: sleepDuration);
         }
-        else {
-            print("execution time greater. \(currentTime - startTime)");
-            exit(-5);
-        }
-        totalInstructionClockCycles = 0;
     }
 }

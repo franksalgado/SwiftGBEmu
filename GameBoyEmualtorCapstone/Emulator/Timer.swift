@@ -18,38 +18,43 @@ import Foundation
  */
 
 struct Timer {
-    var DIV: U8 = 0xAB;
+    var DIV: U16 = 0xAC00;
     var TIMA: U8 = 0;
     var TMA: U8 = 0;
     var TAC: U8 = 0
-    var divCount: U16 = 0;
-    var timaCount: U16 = 0;
     var timaOverFlow: Bool = false;
-    var timaFrequencies: [U16] = [1024, 16, 64, 256];
+    var timerUpdate: Bool = false;
+    //var timaFrequencies: [U16] = [1024, 16, 64, 256];
     var cpu: CPU
-    mutating func timerTick() {
-        timaOverFlow = false;
-        divCount &+= 1;
-        timaCount &+= 1;
-        if divCount == 256 {
-            DIV &+= 1;
-            divCount = 0;
+    mutating func timerTick() -> Void {
+        let previousDiv = DIV;
+        DIV &+= 1;
+        timerUpdate = false;
+        switch TAC & 0b11 {
+        case 0b00:
+            timerUpdate = (previousDiv & (1 << 9)) != 0 && (DIV & (1 << 9)) == 0;
+        case 0b01:
+            timerUpdate = (previousDiv & (1 << 3)) != 0 && (DIV & (1 << 3)) == 0;
+        case 0b10:
+            timerUpdate = (previousDiv & (1 << 5)) != 0 && (DIV & (1 << 5)) == 0;
+        case 0b11:
+            timerUpdate = (previousDiv & (1 << 7)) != 0 && (DIV & (1 << 7)) == 0;
+        default:
+            break;
         }
-        if timaCount == timaFrequencies[Int(TAC & 0b11)] {
-            if TIMA == 255 && isBitSet(bitPosition: 1, in: TAC) {
-                TIMA = TMA;
-                timaOverFlow = true;
-                cpu.RequestInterrupt(InterruptTypes: .TIMER);
-                return;
-            }
+
+        if timerUpdate && (TAC & (1 << 2)) != 0 {
             TIMA &+= 1;
-            timaCount = 0;
+            if TIMA == 0xFF {
+                TIMA = TMA;
+                cpu.RequestInterrupt(InterruptTypes: .TIMER);
+            }
         }
     }
     func TimerRead(address: UInt16) -> UInt8 {
         switch(address) {
         case 0xFF04:
-            return DIV;
+            return U8(DIV >> 8);
         case 0xFF05:
             return TIMA;
         case 0xFF06:

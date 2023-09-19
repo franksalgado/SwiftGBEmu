@@ -11,6 +11,7 @@ typealias U8 = UInt8;
 typealias U16 = UInt16;
 typealias U32 = UInt32;
 
+//positions of the bits
 let ZFlag: UInt8 = 7;
 let NFlag: UInt8 = 6;
 let HFlag: UInt8 = 5;

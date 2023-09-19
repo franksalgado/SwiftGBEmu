@@ -12,6 +12,7 @@ class GameBoy {
     var cartridge: Cartridge;
     var state: GameBoyState = GameBoyState();
     var ram: RAM = RAM();
+    var APU = GameBoySoundRegisters();
     init(cartridge: Cartridge) {
         //romData = GetROMData(fileURL: GetFileURL()!)!;
         self.cartridge = cartridge;

@@ -34,27 +34,7 @@ extension GameBoy {
             //unusable
             break
         case 0xFF00..<0xFF80:
-            if address == 0xFF00 {
-                //print("reading from joypad", JoypadInstance.JoypadRead())
-                //return JoypadInstance.JoypadRead();
-            }
-            if address == 0xFF01 {
-                return SerialData[0];
-            }
-            if address == 0xFF02 {
-                return SerialData[1];
-            }
-            if address >= 0xFF04 && address <= 0xFF07 {
-                return LR35902.timer.TimerRead(address: address);
-            }
-            if address == 0xFF0F {
-                return LR35902.interruptFlags;
-            }
-            if address >= 0xFF40 && address <= 0xFF4B {
-                //return LCDRead(address: address);
-            }
-            print("Invalid IO Read")
-            return 0;
+            return IORead(address: address);
         case 0xFF80..<0xFFFF:
             return ram.highRAMRead(address: address);
         case 0xFFFF:
@@ -89,25 +69,7 @@ extension GameBoy {
             // unusable
             break;
        case 0xFF00..<0xFF80:
-            if address == 0xFF00 {
-                //print("writing to joypad", value)
-                //JoypadInstance.JoypadWrite(value: value);
-            }
-            if address == 0xFF01 {
-                SerialData[0] = value;
-            }
-             if address == 0xFF02 {
-                SerialData[1] = value;
-            }
-             if address >= 0xFF04 && address <= 0xFF07 {
-                 LR35902.timer.TimerWrite(address: address, value: value);
-            }
-            if address == 0xFF0F {
-                 LR35902.interruptFlags = value;
-            }
-            if address >= 0xFF40 && address <= 0xFF4B {
-                //LCDWrite(address: address, value: value);
-            }
+            IOWrite(address: address, value: value);
         case 0xFF80..<0xFFFF:
             ram.highRAM[Int(address &- 0xFF80)] = value;
         case 0xFFFF:

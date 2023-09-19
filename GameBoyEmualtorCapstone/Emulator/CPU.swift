@@ -125,6 +125,7 @@ class CPU {
     var GB: GameBoy;
     var totalInstructionClockCycles: Double = 0;
     let clockCycleDuration: Double = 1 / 4194304;
+    let machineCycleDuration: Double = 1 / 1048576;
     func CPUStep() -> Bool{
         if !halted {
             currentOpcode = GB.BusRead(address: registers.pc);
