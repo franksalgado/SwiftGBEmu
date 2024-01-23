@@ -9,6 +9,8 @@ import Foundation
 
 import AVFAudio
 
+//https://gbdev.io/pandocs/Audio_Registers.html
+
 struct GameBoySoundRegisters {
     var NR10: U8 = 0x00;
     var NR11: U8 = 0x00;
@@ -117,9 +119,11 @@ Mixer sends two signals to amplifier
  channel 3 wave channel
  channel 4 noise channel
  */
-struct SoundChip {
+struct APU {
     var channelOne = PulseChannelOne();
-    var channelTwo = PulseChannel();
+    var channelTwo = PulseChannelTwo();
+    var channelThree = WaveChannel();
+    var channelFour = NoiseChannel();
 }
 
 /*
@@ -131,8 +135,14 @@ struct SoundChip {
  */
 
 class SoundChannel {
+    var channelOn = true;
+    var isTriggered = false;
     var audioRegisters: [U8] = Array<U8>(repeating: 0, count: 5);
-    func produceWave() -> [U8] {};
+    func emulate() {}
+    func produceWave() -> [U8] {
+        return [0];
+    };
+    var audioBuffer: [U8] = [0];
 }
 
 class PulseChannel: SoundChannel {
@@ -157,6 +167,7 @@ class PulseChannelOne: PulseChannel {
             newPeriod = currentPeriod - (currentPeriod / UInt16( pow(2, Double(n)) ) );
             if newPeriod > 0x7FF {
                 //write code to turn off the channel
+                channelOn = false;
             }
             else {
                 newPeriod = currentPeriod + (currentPeriod / UInt16( pow(2, Double(n)) ) );
